@@ -7,3 +7,7 @@ poetry init -n
 poetry add fastapi[all]
 poetry add "fastapi[all]"
  poetry add pytest --dev 
+
+ uvicorn main:app  
+uvicorn main:app --port 9000 --reload 
+
