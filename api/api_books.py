@@ -29,20 +29,26 @@ def create_book(book: NewBookData) -> SavedBook:
 
 
 @router.get('/')
-def get_books() -> list[dict]:
-    return [{'title': 'NINE', 'pages': 100}]
+def get_books(search_param: str = None, skip: int = 0, limit: int = 10) -> list[SavedBook]:
+    books = storage.get_books(skip, limit, search_param)
+    result = []
+
+    for book in books:
+        instance = SavedBook(
+            **{'title': book['title'], 'author': book['author'], 'price': book['price'], 'cover': book['cover'],
+               'tags': book['tags'], 'description': book['description'], 'uuid': book['uuid']})
+
+        result.append(instance)
+    return result
 
 
-@router.get('/')
-def get_books_by_name() -> list[dict]:
-    return [{'title': 'NINE', 'pages': 100}]
-
-
-@router.put('/update/{book_id}')
-def update_book():
-    pass
+@router.patch('/update/{book_id}')
+def update_book(book_id: str, price: float = 100.00):
+    storage.update_book(book_id, price)
+    return {'result': 'OK'}
 
 
 @router.delete('/delete/{book_id}')
-def delete_book():
-    pass
+def delete_book(book_id: str):
+    storage.delete_book(book_id)
+    return {'deleted': True}
