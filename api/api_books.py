@@ -1,25 +1,12 @@
-from fastapi import APIRouter, status
-from pydantic import BaseModel, Field
-import constants
+from fastapi import APIRouter, status, Response
+
 from storage import storage
+from schemas import NewBookData, SavedBook
 
 router = APIRouter(
     prefix='/api/books',
     tags=['API', 'Books'],
 )
-
-
-class NewBookData(BaseModel):
-    title: str = Field(min_length=3, examples=['I, legend'])
-    author: str
-    price: float = Field(default=0.01, gt=0.0)
-    cover: str
-    tags: list[constants.Genres] = Field(default=[], max_items=2)
-    description: str = None
-
-
-class SavedBook(NewBookData):
-    uuid: str = Field(examples=['28a118b0-0e13-4395-9293-f954a411bc0f'])
 
 
 @router.post('/create', status_code=status.HTTP_201_CREATED)
@@ -43,8 +30,9 @@ def get_books(search_param: str = None, skip: int = 0, limit: int = 10) -> list[
 
 
 @router.patch('/update/{book_id}')
-def update_book(book_id: str, price: float = 100.00):
+def update_book(response: Response, book_id: str, price: float = 100.00):
     storage.update_book(book_id, price)
+    response.set_cookie(key='ddd', value='dfgdgdgfdgfdgdgddfdgdg')
     return {'result': 'OK'}
 
 
@@ -52,3 +40,79 @@ def update_book(book_id: str, price: float = 100.00):
 def delete_book(book_id: str):
     storage.delete_book(book_id)
     return {'deleted': True}
+
+
+
+
+
+
+
+
+
+
+
+# from enum import Enum
+#
+#
+# class Genres(str, Enum):
+#     SIFY = 'since fiction'
+#     DRAMA = 'drama'
+#     FANTASY = 'fantasy'
+#
+#
+#
+#
+# class Creator(BaseModel):
+#     person: list[str] = Field(examples=[['Spielberg', 'Gates']])
+#
+#
+# class CreatedBy(BaseModel):
+#     director: list[Creator] = Field(examples=[['Spielberg', 'Gates']])
+#     producer: list[Creator] = Field(examples=[['Spielberg', 'Gates']])
+#     scriptwriter: list[Creator] = Field(examples=[['Spielberg', 'Gates']])
+#
+#
+# class FilmData(BaseModel):
+#
+#     title: str = Field(examples=['Good Movie'])
+#     genres: list[Genres] = Field(default=[])
+#     created_by: CreatedBy # = Field(default={})
+#     cast: list[str]
+#     duration: int = Field(gt=1, default=1)
+#     description: str = None
+#     tags: list = Field(default=[], max_items=5)
+#
+#
+#
+#
+#
+#
+#
+# @router.post('/fake')
+# def ffffffffffffff(film: FilmData):
+#     return {}
+
+# {
+#   "title": "Good Movie",
+#   "genres": [],
+#   "created_by": {
+#     "director": [
+#       "Spielberg",
+#       "Gates"
+#     ],
+#     "producer": [
+#       "Spielberg",
+#       "Gates"
+#     ],
+#     "scriptwriter": [
+#       "Spielberg",
+#       "Gates"
+#     ]
+#   },
+#   "cast": [
+#     "string"
+#   ],
+#   "duration": 1,
+#   "description": "string",
+#   "tags": []
+# }

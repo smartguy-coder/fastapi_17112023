@@ -3,24 +3,36 @@
 
 
   {% block content %}
-{{ page }}
-<br>
 
-{% for book in books %}
+{% if previous %}
+  <h2>Останній перегляд</h2>
+  <div class="card mb-3">
+    <img src="{{ previous.cover }}" class="card-img-top" alt="..." width="200">
+    <div class="card-body">
+      <h5 class="card-title">{{ previous.title }}</h5>
+      <p class="card-text">{{ previous.description }}</p>
+      <p class="card-text"><small class="text-muted">{{ previous.price }}</small></p>
+    </div>
+  </div>
+{% endif %}
 
-<div class="card container" style="width: 18rem;">
-  <img src="{{ book.cover }}" class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 class="card-title">{{ book.title }}</h5>
-    <p class="card-text">{{ book.description }}</p>
-    <a href="#" class="btn btn-primary">Go somewhere</a>
+
+<div class="container">
+  <div class="row pt-2 pb-2 container">
+
+    {% for book in books %}
+    <div class="card container mb-2" style="width: 18rem;">
+      <img src="{{ book.cover }}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{ book.title }}</h5>
+        <p class="card-text">{{ book.description|truncate(80, False) }}</p>
+        <a href="{{ url_for('book_info', book_uuid=book.uuid) }}" class="btn btn-primary">Детально</a>
+      </div>
+    </div>
+    {% endfor %}
+
   </div>
 </div>
-<br>
-
-{% endfor %}
-
-
   {% endblock %}
 
 

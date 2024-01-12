@@ -16,6 +16,10 @@ class BaseStorage(ABC):
         pass
 
     @abstractmethod
+    def get_book_info(self, book_uuid: str):
+        pass
+
+    @abstractmethod
     def update_book(self, book_uuid: str, new_price: float):
         pass
 
@@ -77,6 +81,14 @@ class JSONStorage(BaseStorage):
         with open(self.file_name, 'w', encoding='utf-8') as file:
             json.dump(content, file, indent=4)
 
+    def get_book_info(self, book_uuid: str):
+        with open(self.file_name, 'r') as file:
+            content: list[dict] = json.load(file)
+        for book in content:
+            if book['uuid'] == book_uuid:
+                return book
+        return {}
+
 
 class MongoStorage(BaseStorage):
     def __init__(self):
@@ -106,6 +118,10 @@ class MongoStorage(BaseStorage):
         new_data = {'$set': {'price': new_price}}
         processed = self.collection.update_one(filter_data, new_data)
         return processed
+
+    def get_book_info(self, book_uuid: str):
+        filter_data = {'uuid': book_uuid}
+        return self.collection.find(filter_data)
 
     def delete_book(self, book_uuid: str):
         filter_data = {'uuid': book_uuid}

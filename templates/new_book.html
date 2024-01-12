@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+
+<!--        cover: str = Form(),-->
+<!--        description: str = Form(),-->
+
+    <form method="post" action="{{ url_for('add_book') }}">
+
+      <div class="mb-3">
+        <label for="book_title" class="form-label">Назва книги</label>
+        <input type="text" class="form-control" id="book_title" required name="title" minlength="{{ text_min_length }}">
+      </div>
+      <div class="mb-3">
+        <label for="book_author" class="form-label">Автор</label>
+        <input type="text" class="form-control" id="book_author" required name="author" minlength="{{ text_min_length }}">
+      </div>
+      <div class="mb-3">
+        <label for="book_price" class="form-label">Ціна</label>
+        <input type="number" class="form-control" id="book_price" name="price">
+      </div>
+
+      <div class="mb-3">
+        <label for="book_cover" class="form-label">Посилання на обкладинку</label>
+        <input type="text" class="form-control" id="book_cover" required name="cover" minlength="{{ text_min_length }}">
+      </div>
+
+      <div class="mb-3">
+        <label for="book_description" class="form-label">Опис книги</label>
+        <input type="text" class="form-control" id="book_description" required name="description" minlength="{{ text_min_length }}">
+      </div>
+
+      <button type="submit" class="btn btn-primary">Опублікувати</button>
+    </form>
+
+
+</div>
+
+
+
+{% endblock %}
